@@ -53,9 +53,9 @@
                 <label for="city">City</label>
                 <select name="city_id" class="form-control" id="city">
                     <option value="">Select City</option>
-                    @foreach ($cities as $city)
+                    {{-- @foreach ($cities as $city)
                         <option value="{{ $city->id }}">{{ $city->name }}</option>
-                    @endforeach
+                    @endforeach --}}
                     <!-- Add more options as needed -->
                 </select>
                 <small id="city_id_error" class="text-danger"></small>
@@ -109,6 +109,32 @@
                 }
             });
 
+        });
+
+
+        $(document).on('change', '#governorate', function(e) {
+            e.preventDefault();
+            var governorate_id = $(this).val();
+            $.ajax({
+                url: "{{ route('users.cities') }}",
+                type: "POST",
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    governorate_id: governorate_id,
+                },
+                success: function(response) {
+                  $('#city').empty();
+                  $('#city').append('<option value="">Select City</option>');
+                  $.each(response, function(index, city) {
+                      $('#city').append('<option value="' + city.id + '">' + city.name + '</option>');
+                  });
+                },
+                error: function(reject) {
+                    console.log(reject);
+                }
+                
+
+        });
         });
     </script>
 </body>

@@ -23,4 +23,14 @@ Route::prefix('users')->name('users.')->controller(UserController::class)->group
     Route::get('/', 'index')->name('index');
     Route::get('/create', 'create')->name('create');
     Route::post('/store', 'store')->name('store');
+    Route::post('/delete' , 'delete')->name('delete');
+
+
+    // Edit $ Update  Routes 
+    Route::get('/edit/{id}', 'edit')->name('edit');
+    Route::post('/update', 'update')->name('update');
+
+    Route::post('cities', 'getCities')->name('cities');
+
+
 });

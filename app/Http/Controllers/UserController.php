@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\Governorate;
 use Illuminate\Http\Request;
 
+use function Laravel\Prompts\select;
+
 class UserController extends Controller
 {
     public function index()
@@ -57,6 +59,54 @@ class UserController extends Controller
             'governorate_id' => 'required|exists:governorates,id',
             'city_id' => 'required|exists:cities,id',
         ];
+    }
+
+
+    public function delete(Request $request){
+        $user = User::findOrFail($request->id);
+
+
+        $user->delete();
+
+        return response()->json([
+            'message' => 'User deleted successfully',
+            'status' => 200,
+            'id' => $user->id,
+        ]);
+
+    }
+
+    public function edit($id){
+        $user = User::findOrFail($id);
+        $governorates = Governorate::all();
+        $cities = City::all();
+
+        return view('users.edit' , compact('user' , 'governorates' , 'cities'));
+    }
+
+    public function update(Request $request ){
+        $user = User::findOrFail($request->id);
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password,
+            'governorate_id' => $request->governorate_id,
+            'city_id' => $request->city_id
+        ]);
+
+        return response()->json([
+            'message' => 'User updated successfully',
+            'status' => 200,
+        ]);
+    }
+
+    public function getCities(Request $request){
+        $request->validate([
+        'governorate_id' => 'required|exists:governorates,id',
+    ]);
+
+        $cities = City::where('governorate_id' , $request->governorate_id)->select('id' , 'name')->get();
+        return response()->json($cities);
     }
 
 
