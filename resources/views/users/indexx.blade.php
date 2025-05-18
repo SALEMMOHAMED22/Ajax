@@ -5,70 +5,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User List</title>
-
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Optional custom styles -->
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-
-        .container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .table img {
-            border-radius: 8px;
-            border: 1px solid #ddd;
-        }
-
-        #searchInput {
-            border-radius: 10px;
-            padding: 10px 15px;
-        }
-
-        #alert-message {
-            text-align: center;
-        }
-
-        .btn {
-            border-radius: 8px;
-        }
-    </style>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
-
     <div class="container mt-5">
-        <h2 class="mb-4 text-center text-primary">User List</h2>
+        <h2 class="mb-4 text-center">User List</h2>
+        <br>
+        <div id="alert-message" class="alert alert-success" style="display: none">
 
-        <div id="alert-message" class="alert alert-success d-none"></div>
-
-        <div class="input-group mb-4">
-            <input type="text" id="searchInput" class="form-control" placeholder="Search by name, email, city or governorate...">
-            <span class="input-group-text bg-primary text-white">
-                <i class="bi bi-search"></i>
-            </span>
         </div>
-
+        <input type="text" id="searchInput" class="form-control" placeholder="Search Here ... ">
+        <br>
         <div class="ajax-table">
-            <table class="table table-bordered table-hover align-middle text-center">
-                <thead class="table-light">
+            <table class="table table-bordered">
+                <thead>
                     <tr>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Governorate</th>
                         <th>City</th>
-                        <th>Image</th>
+                        <th>
+                            Image
+                        </th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
+
                     @foreach ($users as $user)
                         <tr class="user-row-{{ $user->id }}">
                             <td>{{ $user->name }}</td>
@@ -76,34 +40,36 @@
                             <td>{{ $user->governorate->name }}</td>
                             <td>{{ $user->city->name }}</td>
                             <td>
-                                <img src="{{ asset('storage/' . $user->image) }}" width="70" class="img-thumbnail">
+                                <img src="{{ asset('storage/'.$user->image ) }} " class="img-fluid" width="70px" alt="User Image">
                             </td>
                             <td>
-                                <button id="deleteUser" user-id="{{ $user->id }}" class="btn btn-sm btn-danger">Delete</button>
-                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                <button id="deleteUser" user-id="{{ $user->id }}"
+                                    class="btn btn-danger">Delete</button>
+                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary">Edit</a>
                             </td>
                         </tr>
                     @endforeach
+
                 </tbody>
             </table>
-
-            <div id="pagination_search">
+            <div id="pagination">
                 {{ $users->links() }}
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap 5 + jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
-    <!-- AJAX Script -->
+
     <script>
         // delete by ajax
         $(document).on('click', '#deleteUser', function(e) {
             e.preventDefault();
-            var user_id = $(this).attr('user-id');
 
+            var user_id = $(this).attr('user-id');
             $.ajax({
                 url: '{{ route('users.delete') }}',
                 type: 'POST',
@@ -111,17 +77,23 @@
                     _token: '{{ csrf_token() }}',
                     id: user_id,
                 },
+
                 success: function(response) {
                     $('.user-row-' + response.id).remove();
-                    $('#alert-message').removeClass('d-none').text(response.message).fadeOut(6000);
+                    $('#alert-message').text(response.message).show();
+                    $('#alert-message').fadeOut(8000);
+                    // $('#alert-message').on('click', function() {
+                    //    $(this).hide(); 
+                    // });
                 },
                 error: function(reject) {
                     console.log(reject);
                 }
+
             });
         });
 
-        // live search by ajax with debounce
+        // live search by ajax
         let debounce;
         $(document).on('input', '#searchInput', function(e) {
             e.preventDefault();
@@ -139,14 +111,34 @@
                         $('.ajax-table').html(response);
                     },
                 });
-            }, 800);
+            }, 2000);
+
+        });
+
+        // pagination by ajax
+        $(document).on('click', '#pagination a', function(e) {
+            e.preventDefault();
+            var link = $(this).attr('href');
+
+            $.ajax({
+                url: link,
+                type: 'GET',
+                dataType: 'html',
+                success: function(response) {
+                    $('#ajax_pagination').html(response);
+                },
+            });
+
+
         });
 
         // pagination search by ajax
-        $(document).on('click', '#pagination_search a', function(e) {
+         $(document).on('click', '#pagination_search  a', function(e) {
             e.preventDefault();
             var search = $('#searchInput').val();
+
             var page = $(this).attr('href').split('page=')[1];
+            // var link = $(this).attr('href');
 
             $.ajax({
                 url: '/users/search',
@@ -154,15 +146,23 @@
                 dataType: 'html',
                 data: {
                     _token: '{{ csrf_token() }}',
-                    search: search,
+                    search: search,  
                     page: page,
                 },
                 success: function(response) {
                     $('.ajax-table').html(response);
                 },
             });
+
+
         });
+
+
+
     </script>
+
+
+
 </body>
 
 </html>
