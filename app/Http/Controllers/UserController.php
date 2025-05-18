@@ -36,6 +36,14 @@ class UserController extends Controller
             'city_id' => $request->city_id
         ]);
 
+        if($request->hasFile('image')){
+           $file = $request->file('image');
+           $name = $file->getClientOriginalName().time();
+           $path = $file->storeAs('users' , $name , ['disk' => 'public']);
+           $user->image = $path;
+           $user->save();
+        }
+
         if($user){
             return response()->json([
                 'message' => 'User created successfully',
@@ -118,7 +126,7 @@ class UserController extends Controller
             $query->whereRelation('city', 'name', 'like', '%'.$request->search.'%');
             $query->orWhereRelation('governorate', 'name', 'like', '%'.$request->search.'%');
         })
-        ->get();
+        ->paginate(1);
         return view('users.search' , compact('users'));
     }
 

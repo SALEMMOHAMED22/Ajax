@@ -17,7 +17,7 @@
         <div id="errors" class="alert alert-danger" style="display: none">
 
         </div>
-        <form id="userForm">
+        <form id="userForm" >
             @csrf
             <div class="form-group">
                 <label for="name">Name</label>
@@ -61,6 +61,13 @@
                 <small id="city_id_error" class="text-danger"></small>
 
             </div>
+             <div class="form-group">
+                <label for="image">Image</label>
+                <input name="image" type="file" class="form-control" id="image">
+                <small id="image_error" class="text-danger"></small>
+
+            </div>
+
             <div class="text-center">
                 <button id="submitForm" class="btn btn-primary ">حفظ مستخدم </button>
             </div>
@@ -87,6 +94,7 @@
                 url: "{{ route('users.store') }}",
                 type: "POST",
                 data: formData,
+                enctype:"multipart/form-data",
                 processData: false,
                 contentType: false,
                 success: function(response) {

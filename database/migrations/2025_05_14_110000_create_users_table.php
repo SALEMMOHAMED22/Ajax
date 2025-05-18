@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->foreignId('governorate_id')->constrained('governorates');
             $table->foreignId('city_id')->constrained('cities');
+            $table->text('image')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
