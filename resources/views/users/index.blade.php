@@ -13,7 +13,10 @@
         <div id="alert-message" class="alert alert-success" style="display: none">
 
         </div>
-        <table class="table table-bordered">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search by name">
+        <br>
+        <div class="ajax-table">
+<table class="table table-bordered">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -40,6 +43,8 @@
                 
             </tbody>
         </table>
+        {{ $users->links() }}
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -74,6 +79,27 @@
                 }
 
             });
+        });
+
+        let debounce;
+        $(document).on('input', '#searchInput', function(e) {
+            e.preventDefault();
+            var search = $(this).val();
+            clearTimeout(debounce);
+           debounce = setTimeout(() => {
+                 $.ajax({
+                url: '{{ route('users.search') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    search: search,
+                },
+                success: function(response) {
+                    $('.ajax-table').html(response);
+                },
+            });
+            }, 2000);
+           
         });
 
     </script>

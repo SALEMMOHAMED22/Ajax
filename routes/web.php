@@ -33,4 +33,8 @@ Route::prefix('users')->name('users.')->controller(UserController::class)->group
     Route::post('cities', 'getCities')->name('cities');
 
 
+    //   live search by ajax 
+    Route::post('/search', 'search')->name('search');
+
+
 });

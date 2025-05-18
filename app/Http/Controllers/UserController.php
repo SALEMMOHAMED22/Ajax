@@ -13,7 +13,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        $users = User::paginate(1);
         return view('users.index', compact('users'));
     }
 
@@ -107,6 +107,19 @@ class UserController extends Controller
 
         $cities = City::where('governorate_id' , $request->governorate_id)->select('id' , 'name')->get();
         return response()->json($cities);
+    }
+
+
+    public function search(Request $request){
+        
+        $users = User::where('name' , 'like' , '%'.$request->search.'%')
+        ->orWhere('email' , 'like' , '%'.$request->search.'%')
+        ->orWhere(function ($query) use ($request) {
+            $query->whereRelation('city', 'name', 'like', '%'.$request->search.'%');
+            $query->orWhereRelation('governorate', 'name', 'like', '%'.$request->search.'%');
+        })
+        ->get();
+        return view('users.search' , compact('users'));
     }
 
 
