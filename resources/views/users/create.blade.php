@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Registration</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
 
 <body>
@@ -17,7 +19,7 @@
         <div id="errors" class="alert alert-danger" style="display: none">
 
         </div>
-        <form id="userForm" >
+        <form id="userForm">
             @csrf
             <div class="form-group">
                 <label for="name">Name</label>
@@ -61,11 +63,14 @@
                 <small id="city_id_error" class="text-danger"></small>
 
             </div>
-             <div class="form-group">
+            <div class="form-group">
                 <label for="image">Image</label>
-                <input name="image" type="file" class="form-control" id="image">
+                <input name="image" type="file" class="form-control dropify" id="image">
                 <small id="image_error" class="text-danger"></small>
 
+            </div>
+            <div class="form-group">
+                <img src="" alt="" id="image_preview" class="img-fluid" width="70px">
             </div>
 
             <div class="text-center">
@@ -78,8 +83,30 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"></script>
+    <script src= "//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
+    {{-- Image Preview Using Dropify --}}
+    <script>
+        $('.dropify').dropify();
+    </script>
 
     <script>
+        // Image Preview
+        $(document).on('change', '#image', function(e) {
+            e.preventDefault();
+
+            var file = this.files[0];
+            if (file) {
+                 reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#image_preview').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+
+        });
+
         // Add User By Ajax 
         $(document).on('click', '#submitForm', function(e) {
             e.preventDefault();
@@ -88,13 +115,13 @@
             $('#password_error').text('');
             $('#governorate_id_error').text('');
             $('#city_id_error').text('');
-            
+
             var formData = new FormData($('#userForm')[0]);
             $.ajax({
                 url: "{{ route('users.store') }}",
                 type: "POST",
                 data: formData,
-                enctype:"multipart/form-data",
+                enctype: "multipart/form-data",
                 processData: false,
                 contentType: false,
                 success: function(response) {
@@ -111,7 +138,7 @@
                         $('#errors').append('<li>' + value + '</li>').show();
 
                         // show error under form field
-                        $('#'+key+'_error').text(value);
+                        $('#' + key + '_error').text(value);
 
                     })
                 }
@@ -131,18 +158,19 @@
                     governorate_id: governorate_id,
                 },
                 success: function(response) {
-                  $('#city').empty();
-                  $('#city').append('<option value="">Select City</option>');
-                  $.each(response, function(index, city) {
-                      $('#city').append('<option value="' + city.id + '">' + city.name + '</option>');
-                  });
+                    $('#city').empty();
+                    $('#city').append('<option value="">Select City</option>');
+                    $.each(response, function(index, city) {
+                        $('#city').append('<option value="' + city.id + '">' + city.name +
+                            '</option>');
+                    });
                 },
                 error: function(reject) {
                     console.log(reject);
                 }
-                
 
-        });
+
+            });
         });
     </script>
 </body>

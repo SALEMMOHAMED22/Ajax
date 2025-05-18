@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Registration</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
 </head>
 <body>
     <div class="container mt-5">
@@ -57,6 +59,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
        <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src= "//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 
 
         <script>
@@ -77,7 +81,9 @@
 
                     } ,
                     success: function(response) {
-                        $('#alert-message').text(response.message).show().fadeOut(8000);
+                        // $('#alert-message').text(response.message).show().fadeOut(8000);
+                        toastr.options.closeButton = true;
+                        toastr.success(response.message);
                         // $('#alert-message').fadeOut(8000);
 
                     },
