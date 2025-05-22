@@ -45,12 +45,25 @@
 <body>
 
     <div class="container mt-5">
-        <h2 class="mb-4 text-center text-primary">User List</h2>
+        <ul>
+            @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                <li class="nav-item"
+                    @if (config('app.locale') == $localeCode) style="background-color: rgb(208, 182, 182) ; width: 50px " @endif>
+                    <a rel="alternate" hreflang="{{ $localeCode }}"
+                        href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}">
+                        {{ $properties['native'] }}
+                    </a>
+                </li>
+            @endforeach
+        </ul>
+
+        <h2 class="mb-4 text-center text-primary">{{ __('words.user_list') }}</h2>
 
         <div id="alert-message" class="alert alert-success d-none"></div>
 
         <div class="input-group mb-4">
-            <input type="text" id="searchInput" class="form-control" placeholder="Search by name, email, city or governorate...">
+            <input type="text" id="searchInput" class="form-control"
+                placeholder="Search by name, email, city or governorate...">
             <span class="input-group-text bg-primary text-white">
                 <i class="bi bi-search"></i>
             </span>
@@ -60,18 +73,18 @@
             <table class="table table-bordered table-hover align-middle text-center">
                 <thead class="table-light">
                     <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Governorate</th>
-                        <th>City</th>
-                        <th>Image</th>
-                        <th>Actions</th>
+                        <th>{{ __('words.name') }}</th>
+                        <th>{{ __('words.email') }}</th>
+                        <th>{{ __('words.governorate') }}</th>
+                        <th>{{ __('words.city') }}</th>
+                        <th>{{ __('words.image') }}</th>
+                        <th>{{ __('words.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($users as $user)
                         <tr class="user-row-{{ $user->id }}">
-                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->getTranslation('name', app()->getLocale()) }}</td>
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->governorate->name }}</td>
                             <td>{{ $user->city->name }}</td>
@@ -79,8 +92,10 @@
                                 <img src="{{ asset('storage/' . $user->image) }}" width="70" class="img-thumbnail">
                             </td>
                             <td>
-                                <button id="deleteUser" user-id="{{ $user->id }}" class="btn btn-sm btn-danger">Delete</button>
-                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                <button id="deleteUser" user-id="{{ $user->id }}"
+                                    class="btn btn-sm btn-danger">{{ __('words.delete') }}</button>
+                                <a href="{{ route('users.edit', $user->id) }}"
+                                    class="btn btn-sm btn-primary">{{ __('words.edit') }}</a>
                             </td>
                         </tr>
                     @endforeach
@@ -90,9 +105,12 @@
             <div id="pagination_search">
                 {{ $users->links() }}
             </div>
+
+            <div class="text-center">
+                <a href="{{ route('users.create') }}" class="btn btn-primary mt-3">{{ __('words.add_user') }}</a>
+            </div>
         </div>
     </div>
-
     <!-- Bootstrap 5 + jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -38,8 +38,12 @@
             <h2 class="mb-4 text-center">✏️ Edit User</h2>
             <form>
                 <div class="form-group">
-                    <label for="name">Full Name</label>
-                    <input type="text" class="form-control" id="name" value="{{ $user->name }}" placeholder="Enter full name">
+                    <label for="name">{{ __('words.name_ar') }}</label>
+                    <input type="text" class="form-control" id="name" value="{{ $user->getTranslation('name', 'ar') }}" placeholder="Enter full name">
+                </div>
+                <div class="form-group">
+                    <label for="name">{{ __('words.name_en') }}</label>
+                    <input type="text" class="form-control" id="name" value="{{ $user->getTranslation('name', 'en') }}" placeholder="Enter full name">
                 </div>
 
                 <div class="form-group">

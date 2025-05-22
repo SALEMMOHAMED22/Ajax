@@ -7,16 +7,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Translatable\HasTranslations;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable , HasTranslations;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
+    public $translatable = ['name'];
     protected $guarded = [];
 
     /**
@@ -46,5 +48,10 @@ class User extends Authenticatable
     public function city()
     {
         return $this->belongsTo(City::class);
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
     }
 }

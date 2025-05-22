@@ -13,7 +13,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::paginate(1);
+        $users = User::paginate(5);
         return view('users.index', compact('users'));
     }
 
@@ -26,6 +26,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        // return $request;
         $request->validate($this->validateUser());
 
         $user = User::create([
@@ -61,7 +62,7 @@ class UserController extends Controller
     {
         return [
 
-            'name' => 'required',
+            'name.*' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required',
             'governorate_id' => 'required|exists:governorates,id',
@@ -126,9 +127,9 @@ class UserController extends Controller
             $query->whereRelation('city', 'name', 'like', '%'.$request->search.'%');
             $query->orWhereRelation('governorate', 'name', 'like', '%'.$request->search.'%');
         })
-        ->paginate(1);
+        ->paginate(5);
         return view('users.search' , compact('users'));
+
     }
-
-
 }
+

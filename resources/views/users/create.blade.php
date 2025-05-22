@@ -12,7 +12,7 @@
 
 <body>
     <div class="container mt-5">
-        <h2 class="mb-4 text-center">انشاء مستخدم جديد</h2>
+        <h2 class="mb-4 text-center">{{ __('words.create_new_user') }}</h2>
         <div id="alert-message" class="alert alert-success" style="display: none">
 
         </div>
@@ -22,27 +22,32 @@
         <form id="userForm">
             @csrf
             <div class="form-group">
-                <label for="name">Name</label>
-                <input name="name" type="text" class="form-control" id="name" placeholder="Enter your name">
-                <small id="name_error" class="text-danger"></small>
+                <label for="name">{{ __('words.name_ar') }}</label>
+                <input name="name[ar]" type="text" class="form-control" id="name_ar" placeholder="{{ __('words.enter_name') }}">
+                <small id="name['ar']_error" class="text-danger"></small>
             </div>
             <div class="form-group">
-                <label for="email">Email address</label>
+                <label for="name">{{ __('words.name_en') }}</label>
+                <input name="name[en]" type="text" class="form-control" id="name_en" placeholder="{{ __('words.enter_name') }}">
+                <small id="name['en']_error" class="text-danger"></small>
+            </div>
+            <div class="form-group">
+                <label for="email">{{ __('words.email') }}</label>
                 <input name="email" type="email" class="form-control" id="email" placeholder="Enter your email">
                 <small id="email_error" class="text-danger"></small>
 
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
+                <label for="password">{{ __('words.password') }}</label>
                 <input name="password" type="password" class="form-control" id="password"
                     placeholder="Enter your password">
                 <small id="password_error" class="text-danger"></small>
 
             </div>
             <div class="form-group">
-                <label for="governorate">Governorate</label>
+                <label for="governorate">{{ __('words.governorate') }}</label>
                 <select name="governorate_id" class="form-control" id="governorate">
-                    <option value="">Select Governorate</option>
+                    <option value="">{{ __('words.select_governorate') }}</option>
                     @foreach ($governorates as $governorate)
                         <option value="{{ $governorate->id }}">{{ $governorate->name }}</option>
                     @endforeach
@@ -52,9 +57,9 @@
 
             </div>
             <div class="form-group">
-                <label for="city">City</label>
+                <label for="city">{{ __('words.city') }}</label>
                 <select name="city_id" class="form-control" id="city">
-                    <option value="">Select City</option>
+                    <option value="">{{ __('words.select_city') }}</option>
                     {{-- @foreach ($cities as $city)
                         <option value="{{ $city->id }}">{{ $city->name }}</option>
                     @endforeach --}}
@@ -64,7 +69,7 @@
 
             </div>
             <div class="form-group">
-                <label for="image">Image</label>
+                <label for="image">{{ __('words.image') }}</label>
                 <input name="image" type="file" class="form-control dropify" id="image">
                 <small id="image_error" class="text-danger"></small>
 
@@ -74,7 +79,7 @@
             </div>
 
             <div class="text-center">
-                <button id="submitForm" class="btn btn-primary ">حفظ مستخدم </button>
+                <button id="submitForm" class="btn btn-primary "> {{ __('words.save') }} </button>
             </div>
         </form>
     </div>
@@ -110,7 +115,8 @@
         // Add User By Ajax 
         $(document).on('click', '#submitForm', function(e) {
             e.preventDefault();
-            $('#name_error').text('');
+            $('#name.ar_error').text('');
+            $('#name.en_error').text('');
             $('#email_error').text('');
             $('#password_error').text('');
             $('#governorate_id_error').text('');
